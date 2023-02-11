@@ -3,4 +3,30 @@
 <PageTitle>Index</PageTitle>
 
 <h1>Hello, world!</h1>
-<InputFile></InputFile>
+<InputFile OnChange="LoadFiles" multiple></InputFile>
+
+@if(errors.Count>0)
+{
+    <h2>Errors</h2>
+    <ul class="text-danger">
+        @foreach (var error in errors)
+        {
+            <li>@error</li>
+        }
+    </ul>
+
+}
+
+@code{
+    int maxAllowedFileCount = 3;
+    List<string> errors = new();
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        if(e.FileCount > maxAllowedFileCount)
+        {
+            errors.Clear();
+            errors.Add($"Max numer of files allowed is {maxAllowedFileCount}");
+            return;
+        }
+    }
+}
