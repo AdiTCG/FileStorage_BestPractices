@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inject IConfiguration config
 
 <PageTitle>Index</PageTitle>
 
@@ -18,6 +19,7 @@
 }
 
 @code{
+    long maxFileSize = 1024 * 1024 * 2; //2MB
     int maxAllowedFileCount = 3;
     List<string> errors = new();
     private async Task LoadFiles(InputFileChangeEventArgs e)
@@ -28,5 +30,37 @@
             errors.Add($"Max numer of files allowed is {maxAllowedFileCount}");
             return;
         }
+
+        foreach (var file in e.GetMultipleFiles(maxAllowedFileCount))
+        {
+            try
+            {
+                string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(file.Name));
+
+                string fileFullPath = Path.Combine(config.GetValue<string>("FileStoragePath")!,
+                "FileName",
+                newFileName);
+
+                if (string.IsNullOrEmpty(fileFullPath))
+                {
+                    errors.Add($"File path for storage is not right{fileFullPath}");
+                    return;
+                }
+
+                if (Directory.Exists(Path.GetDirectoryName(fileFullPath)) == false)
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(fileFullPath));
+                }
+
+                using FileStream fileStream = new(fileFullPath, FileMode.Create);
+                await file.OpenReadStream(maxFileSize).CopyToAsync(fileStream);
+            }
+            catch (Exception ex)
+            {
+                errors.Add($"File: {file.Name}, Error: {ex.Message}");
+                throw;
+            }
+        }
+
     }
 }
