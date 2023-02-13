@@ -22,7 +22,8 @@ internal class SqlAccess
 			?? throw new Exception($"Missing connection string at {connectionName}");
 
 		using var connection = new SqlConnection(connectionString);
-		connection.ExecuteAsync(
+		
+		await connection.ExecuteAsync(
 			storeProcedure, 
 			parameters, 
 			commandType: System.Data.CommandType.StoredProcedure);
