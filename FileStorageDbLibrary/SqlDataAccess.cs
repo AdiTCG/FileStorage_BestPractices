@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace FileStorageDbLibrary;
 
-internal class SqlDataAccess : ISqlDataAccess
+public class SqlDataAccess : ISqlDataAccess
 {
     private IConfiguration _configuration;
 
