@@ -4,11 +4,11 @@ using Microsoft.Extensions.Configuration;
 
 namespace FileStorageDbLibrary;
 
-internal class SqlAccess
+internal class SqlDataAccess
 {
     private IConfiguration _configuration;
 
-	public SqlAccess(IConfiguration configuration)
+	public SqlDataAccess(IConfiguration configuration)
 	{
 		_configuration= configuration;
 	}
