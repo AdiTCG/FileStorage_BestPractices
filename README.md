@@ -10,3 +10,5 @@ Create a blazor server or WebAssebbly app, with default templates. In this learn
 
 FileStorageDbLibrary serves the data from db. We have created a local db with SQL server  object explorer.
 FileStorageApp is accessing data using the FileStorageDbLibrary.
+
+Feathing data from sql:
