@@ -1,6 +1,8 @@
 ﻿@page "/"
 @using FileStorageApp.Data;
+@using FileStorageDbLibrary;
 @inject IConfiguration config
+@inject ISqlDataAccess sql
 
 <PageTitle>Index</PageTitle>
 
@@ -32,12 +34,45 @@
     </ul>
 }
 
+@if (customers is not null)
+{
+    <h2>Existing Customers</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Profile Picture</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in customers)
+            {
+                <tr>
+                    <td>@c.Id</td>
+                    <td>@c.FirstName</td>
+                    <td>@c.LastName</td>
+                    <td>
+                        @if (string.IsNullOrEmpty(c.UserName) == false)
+                        {
+                            <img src="" width="400"/>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
 @code {
     private long maxFileSize = 1024 * 1024 * 2; //2MB
     private int maxAllowedFileCount = 3;
     private List<string> errors = new();
     private CustomerModel newCustomer = new();
     private IBrowserFile? file;
+    private List<CustomerModel> customers;
 
     private async Task SubmitForm()
     {
@@ -45,6 +80,17 @@
         {
             string fullFillPath = await FileCapture();
             newCustomer.FileName = fullFillPath;
+
+            await sql.SaveData(
+                "dbo.spCustomer_Insert",
+                "Default",
+                newCustomer);
+
+                newCustomer = new();
+                file = null;
+                errors.Clear();
+
+            //await LoadCustomers();
         }
         catch (Exception ex)
         {
@@ -56,6 +102,20 @@
     private void LoadFiles(InputFileChangeEventArgs e)
     {
         file = e.File;
+    }
+
+    private async Task LoadCustomers()
+    {
+        customers = await sql.LoadData<CustomerModel>(
+            "dbo.spCustomer_GetAll",
+            "Default",
+            null
+        );
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCustomers();
     }
 
     private async Task<string> FileCapture()
