@@ -53,9 +53,9 @@
                     <td>@c.FirstName</td>
                     <td>@c.LastName</td>
                     <td>
-                        @if (string.IsNullOrEmpty(c.UserName) == false)
+                        @if (string.IsNullOrEmpty(c.FileName) == false)
                         {
-                            <img src="" width="400"/>
+                            <img src="@CreateWebPath(c.FileName)" width="400" />
                         }
                     </td>
                 </tr>
@@ -85,9 +85,9 @@
                 "Default",
                 newCustomer);
 
-                newCustomer = new();
-                file = null;
-                errors.Clear();
+            newCustomer = new();
+            file = null;
+            errors.Clear();
 
             await LoadCustomers();
         }
@@ -101,6 +101,11 @@
     private void LoadFiles(InputFileChangeEventArgs e)
     {
         file = e.File;
+    }
+
+    private string CreateWebPath(string relativePath)
+    {
+        return Path.Combine(config.GetValue<string>("webStorageRoot")!, Path.GetFileName(relativePath));
     }
 
     private async Task LoadCustomers()
