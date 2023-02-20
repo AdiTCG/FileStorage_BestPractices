@@ -10,4 +10,8 @@
     <ProjectReference Include="..\FileStorageDbLibrary\FileStorageDbLibrary.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\profilePictures\" />
+  </ItemGroup>
+
 </Project>
