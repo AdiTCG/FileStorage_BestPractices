@@ -12,3 +12,13 @@ FileStorageDbLibrary serves the data from db. We have created a local db with SQ
 FileStorageApp is accessing data using the FileStorageDbLibrary.
 
 Feathing data from sql:
+
+
+### Tips:
+* Dont trust the user
+	- Rename the file name
+* Use relative path
+* Always associate file with user (logged-in) data, or at least captcha
+* Dont store file with source code, have a dedicate part or blob storage
+* Create a backup policy of data (backup and restore)
+* Limit types
